@@ -1,0 +1,372 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .main-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* --------------------------------CSS de header img*/
+  header {
+    background-color: #ffffff;
+    color: #9e9e9c;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    justify-items: center;
+    align-items: center;
+  }
+  
+  .logo-img {
+    width: 200px;
+  }
+  
+  .logo-nav-compact{
+    display: none;
+  }
+  
+  /* -----------------comienza css de nav ul */
+  nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f6f3;
+    padding: 25px;
+  }
+  
+  .container-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60%; /* Ajusta según lo necesites */
+  }
+  nav ul li a {
+    color: #241f21;
+    text-decoration: none;
+  }
+  
+  .container-nav {
+    grid-area: nav;
+  }
+  
+  .icons-icon-svg{
+    grid-area: icons;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .icons-icon-svg a{
+    width: 20px;
+  }
+  .nav-list {
+    display: flex;
+    list-style-type: none;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  li.nav-ul-li {
+    margin: 0px 8px 0 0;
+    transition: transform 0.3s ease 0s;
+    font-size: clamp(12px, 2vw, 15px);
+  }
+  
+  nav ul li:hover {
+    transform: scale(1.1);
+  }
+  
+  nav ul li::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background-color: #241f21;
+    transition: width 0.3s ease-in-out, left 0.5s ease-in-out;
+    transform: translateX(-50%);
+  }
+  
+  nav ul li:hover::after {
+    width: 100%;
+  }
+  
+  /* -----------------termina css de nav ul */
+  
+  nav div.container-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    gap: 50px;
+    padding: 20px 0 20px 0;
+    font-size: 16px;
+    width: 100%;
+    max-width: var(--container-nav-max-width);
+    grid-area: 1 / 2 / 2 / 6;
+    justify-items: end;
+  }
+  
+  /* ----------------------icons nav */
+  
+  /* -----------------css que aun no uso */
+
+  /* CSS de hamburguer */
+  
+  .open-nav,
+  .close-menu {
+    display: none;
+  }
+  
+  .logo-img-2-nav {
+    display: none;
+  }
+  
+  .nav-hamburguer.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Para pantallas pequeñas */
+  @media (max-width: 1024px) {
+    /* Estilo del nav con grid */
+    nav .container-center {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: "open-nav logo icons";
+      align-items: center;
+      justify-items: center;
+      background-color: #f5f6f3;
+      width: 100%;
+      padding: 10px;
+    }
+  
+    nav {
+      padding: 10px;
+    }
+  
+    header{
+      display: none;
+    }
+  
+    .logo-nav-compact{
+      display: block;
+      grid-area: logo;
+  
+    }
+  
+    .icons-icon-svg{
+      grid-area: icons;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    
+    .icons-icon-svg a{
+      width: 20px;
+    }
+  
+    /* Botón de abrir menú */
+    .open-nav {
+      display: block;
+      grid-area: open-nav;
+      border: 0;
+      font-size: 1.5rem;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  
+    .close-menu {
+      display: block;
+      grid-area: open-nav;
+      border: 0;
+      font-size: 1.5rem;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  
+    nav .nav-hamburguer {
+      opacity: 0;
+      visibility: hidden;
+    }
+  
+    /* Lista del menú hamburguesa */
+    div.nav-hamburguer {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      position: absolute;
+      padding: 1rem;
+      background-color: #ffffff;
+      width: 400px;
+      box-shadow: 0 0 0 110vmax rgba(0, 0, 0, 0.15);
+    }
+  
+    .nav-hamburguer {
+      transform: translateX(-100%); /* Fuera de la vista inicialmente */
+      transition: all 0.4s ease;
+    }
+  
+    .nav-hamburguer.menu-open {
+      transform: translateX(0); /* Mueve el menú a su posición */
+    }
+  
+    ul.nav-list {
+      flex-direction: column;
+      align-items: start;
+      cursor: pointer;
+    }
+  
+    ul.nav-list li {
+      padding: 24px;
+      font-size: 22px;
+    }
+  
+    nav ul li:hover {
+      transition: none;
+      transform: none;
+    }
+  
+    nav ul li::after {
+      transition: none;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    nav .container-center {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: "open-nav logo icons";
+      align-items: stretch;
+      justify-items: center;
+      background-color: #f5f6f3;
+      width: 100%;
+      padding: 10px;
+    }
+  
+    nav {
+      padding: 10px;
+    }
+  
+    header {
+      display: none;
+    }
+  
+    .logo-nav-compact {
+      display: block;
+      grid-area: logo;
+      width: 125px; /* Ajusta el tamaño */
+    }
+  
+    .icons-icon-svg{
+      grid-area: icons;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    
+    .icons-icon-svg a{
+      width: 20px;
+    }
+  
+    .icons-icon-svg-a{
+      grid-area: icons;
+      display: block;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+      width: 20px;
+      cursor: pointer;
+    }
+  
+    /* Botón de abrir menú */
+    .open-nav {
+      display: block;
+      grid-area: open-nav;
+      border: 0;
+      font-size: 1.5rem;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  
+    .close-menu {
+      display: block;
+      grid-area: open-nav;
+      border: 0;
+      font-size: 1.5rem;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  
+    nav .nav-hamburguer {
+      opacity: 0;
+      visibility: hidden;
+    }
+  
+    /* Lista del menú hamburguesa */
+    div.nav-hamburguer {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      position: absolute;
+      padding: 1rem;
+      background-color: #ffffff;
+      width: 100%; /* Ajustado a 100% para que sea responsive */
+      max-width: 400px; /* Añadido para no sobrepasar un tamaño máximo */
+      box-shadow: 0 0 0 110vmax rgba(0, 0, 0, 0.15);
+    }
+  
+    .nav-hamburguer {
+      transform: translateX(-100%); /* Fuera de la vista inicialmente */
+      transition: all 0.4s ease;
+    }
+  
+    .nav-hamburguer.menu-open {
+      transform: translateX(0); /* Mueve el menú a su posición */
+    }
+  
+    ul.nav-list {
+      flex-direction: column;
+      align-items: start;
+      cursor: pointer;
+    }
+  
+    ul.nav-list li {
+      padding: 24px;
+      font-size: 22px;
+    }
+  
+    nav ul li:hover {
+      transition: none;
+      transform: none;
+    }
+  
+    nav ul li::after {
+      transition: none;
+    }
+  }
+  :root {
+    --container-nav-max-width: 1600px;
+  }
+  
