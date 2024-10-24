@@ -1,33 +1,73 @@
 <header>
-    <div class="logo">
+  <div class="logo">
+    <a href="#"><img src="/logo-long-da.svg" alt="logo" class="logo-img" /></a>
+  </div>
+</header>
+<nav>
+  <div class="container-center">
+    <button class="open-nav" id="open"><i class="bi bi-list"></i></button>
+    <div class="nav-hamburguer" id="nav">
+      <button class="close-menu" id="close"><i class="bi bi-x"></i></button>
+      <ul class="nav-list">
+        <li
+          class="dropdown" 
+          (mouseover)="showMenu()"
+          (mouseout)="hideMenu($event)"
+          id="prueba-fondo"
+        >
+          <a href="#">Productos</a>
+          <div id="dropdown-content" class="dropdown-content"><h1>hola, ya abrio</h1></div>
+        </li>
+        <li class="dropdown"><a href="#">Servicios</a></li>
+        <li class="dropdown"><a href="#">Celebraciones</a></li>
+        <li class="dropdown"><a href="#">Promociones</a></li>
+        <li class="dropdown"><a href="#">Nosotros</a></li>
+      </ul>
+    </div>
+    <div class="logo-nav-compact">
       <a href="#"
         ><img src="/logo-long-da.svg" alt="logo" class="logo-img"
       /></a>
     </div>
-  </header>
-  <nav>
-      <div class="container-center">
-        <button class="open-nav" id="open"><i class="bi bi-list"></i></button>
-        <div class="nav-hamburguer" id="nav">
-          <button class="close-menu" id="close"><i class="bi bi-x"></i></button>
-          <ul class="nav-list">
-            <li class="nav-ul-li"><a href="#">Productos</a></li>
-            <li class="nav-ul-li"><a href="#">Servicios</a></li>
-            <li class="nav-ul-li"><a href="#">Celebraciones</a></li>
-            <li class="nav-ul-li"><a href="#">Promociones</a></li>
-            <li class="nav-ul-li"><a href="#">Joyeria</a></li>
-          </ul>
-        </div>
-        <div class="logo-nav-compact">
-          <a href="#"
-            ><img src="img/logo-long-da.svg" alt="logo" class="logo-img"
-          /></a>
-        </div>
-      <div class="icons-icon-svg">
-        <a href="#"><img src="/search.svg" alt="" /></a>
-        <a href=""><img src="/favorite.svg" alt="" /></a>
-        <a href=""><img src="/cart-shopping.svg" alt="" /></a>
-        <a href=""><img src="/user.svg" alt="" /></a>
-      </div>
-      </div>
-  </nav>
+    <div class="icons-icon-svg">
+      <a href="#"><img src="/search.svg" alt="" /></a>
+      <a href=""><img src="/favorite.svg" alt="" /></a>
+      <a href=""><img src="/cart-shopping.svg" alt="" /></a>
+      <a href=""><img src="/user.svg" alt="" /></a>
+    </div>
+  </div>
+  <span id="overlay" class="overlay"></span>
+</nav>
+
+<!-- <nav>
+  <ul>
+      <li class="dropdown">
+          Productos
+          <div class="dropdown-content">
+              
+              <img src="producto1.jpg" alt="Producto 1">
+              <img src="producto2.jpg" alt="Producto 2">
+              
+          </div>
+      </li>
+  </ul>
+</nav> -->
+
+<!-- 
+<button >
+  Productos
+  <svg
+    focusable="false"
+    height=" 20"
+    class="icon icon--chevron"
+    xmlns="http://www.w3.org/2000/svg"
+    viewbox=" 0 0 20 20"
+    fill="none"
+  >
+    <path
+      d="M5 7.5L10 12.5L15 7.5"
+      stroke="currentColor"
+      stroke-linecap="round"
+    ></path>
+  </svg>
+</button> -->
