@@ -1,55 +1,103 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild, ElementRef, inject, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 import { RouterLinkWithHref } from '@angular/router';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLinkWithHref],
+  imports: [CommonModule, RouterLinkWithHref],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  private userService = inject(UserService);
+  public authService = inject(AuthService);
+  private router = inject(Router);
+
+  @ViewChild('dropdownContent', { static: false }) dropdownContent!: ElementRef;
+  @ViewChild('userMenu', { static: false }) userMenu!: ElementRef;
+
+  menuVisible = false;
+  userProfile: User | null = null;
+
   ngOnInit(): void {
+    this.fetchUserProfile();
+    this.setupNavMenu();
+  }
+
+  private setupNavMenu() {
     const nav = document.querySelector('#nav');
     const open = document.querySelector('#open');
     const close = document.querySelector('#close');
-    const overlay = document.querySelector('#overlay ');
+    const overlay = document.querySelector('#overlay');
 
     open?.addEventListener('click', () => {
-      nav?.classList.add('visible');
-      overlay?.classList.add('active');
-      console.log('se abrio pero no se aplico la clase');
+      this.toggleNavMenu(nav, overlay, true);
     });
 
     close?.addEventListener('click', () => {
-      nav?.classList.remove('visible');
-      overlay?.classList.remove('active');
-      console.log('se cerro pero no se aplico la clase');
-    });
-
-    open?.addEventListener('click', function () {
-      document.querySelector('.nav-hamburguer')?.classList.add('menu-open');
-    });
-
-    close?.addEventListener('click', function () {
-      document.querySelector('.nav-hamburguer')?.classList.remove('menu-open');
+      this.toggleNavMenu(nav, overlay, false);
     });
 
     overlay?.addEventListener('click', () => {
-      nav?.classList.remove('visible');
-      overlay.classList.remove('active');
+      this.toggleNavMenu(nav, overlay, false);
     });
   }
 
-  @ViewChild('dropdownContent', { static: false }) dropdownContent!: ElementRef;
-
-  showMenu() {
-    this.dropdownContent.nativeElement.style.display = 'block';
+  private toggleNavMenu(nav: Element | null, overlay: Element | null, open: boolean) {
+    if (open) {
+      nav?.classList.add('visible');
+      overlay?.classList.add('active');
+      document.querySelector('.nav-hamburguer')?.classList.add('menu-open');
+    } else {
+      nav?.classList.remove('visible');
+      overlay?.classList.remove('active');
+      document.querySelector('.nav-hamburguer')?.classList.remove('menu-open');
+    }
   }
 
-  hideMenu(event: MouseEvent) {
-    if (!this.dropdownContent.nativeElement.contains(event.relatedTarget)) {
-      this.dropdownContent.nativeElement.style.display = 'none';
+  fetchUserProfile() {
+    if (this.authService.isLogged()) {
+      this.userService.fetchUserProfile().subscribe({
+        next: (profile) => {
+          this.userProfile = profile; 
+        },
+        error: (error) => {
+          console.error('Error fetching user profile:', error.message || error);
+        }
+      });
     }
+  }
+
+  toggleMenu() {
+    this.menuVisible = !this.menuVisible; 
+    console.log('Menú visible:', this.menuVisible); 
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!this.dropdownContent || !this.userMenu) {
+      return;
+    }
+
+    const isDropdownClicked = this.dropdownContent.nativeElement.contains(event.target);
+    const isUserProfileClicked = this.userMenu.nativeElement.contains(event.target);
+
+    if (!isDropdownClicked && !isUserProfileClicked) {
+      this.menuVisible = false; 
+    }
+  }
+
+  isLogged() {
+    return this.authService.isLogged();
+  }
+
+  logout() {
+    this.authService.removeToken();
+    this.router.navigate(['/']);
   }
 }

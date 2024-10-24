@@ -1,0 +1,46 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label for="firstname" class="form-label">Firstname</label>
+    <input type="text" class="form-control" id="firstname" formControlName="firstname" />
+    <div *ngIf="(registerForm.get('firstname')?.invalid && 
+                  (registerForm.get('firstname')?.dirty || registerForm.get('firstname')?.touched))" class="text-danger">
+      <div *ngIf="registerForm.get('firstname')?.hasError('required')">Firstname is required</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="lastname" class="form-label">Lastname</label>
+    <input type="text" class="form-control" id="lastname" formControlName="lastname" />
+    <div *ngIf="(registerForm.get('lastname')?.invalid && 
+                  (registerForm.get('lastname')?.dirty || registerForm.get('lastname')?.touched))" class="text-danger">
+      <div *ngIf="registerForm.get('lastname')?.hasError('required')">Lastname is required</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" id="email" formControlName="email" />
+    <div *ngIf="(registerForm.get('email')?.invalid && 
+                  (registerForm.get('email')?.dirty || registerForm.get('email')?.touched))" class="text-danger">
+      <div *ngIf="registerForm.get('email')?.hasError('required')">Email is required</div>
+      <div *ngIf="registerForm.get('email')?.hasError('email')">Email must be a valid email</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="avatar" class="form-label">Avatar</label>
+    <input type="file" class="form-control" id="avatar" (change)="onFileChange($event)" />
+  </div>
+
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" formControlName="password" />
+    <div *ngIf="(registerForm.get('password')?.invalid && 
+                  (registerForm.get('password')?.dirty || registerForm.get('password')?.touched))" class="text-danger">
+      <div *ngIf="registerForm.get('password')?.hasError('required')">Password is required</div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
