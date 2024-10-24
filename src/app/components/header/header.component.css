@@ -128,6 +128,75 @@ nav .nav-hamburguer.visible {
   opacity: 1;
   visibility: visible;
 }
+.user-profile {
+  position: relative; /* Para poder posicionar el menú desplegable */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el perfil */
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 50px; /* Tamaño del avatar */
+  height: 40px; /* Tamaño del avatar */
+  border-radius: 50%; /* Avatar redondo */
+  margin-right: 20px; /* Espaciado entre avatar y nombre */
+}
+
+.dropdown-menu {
+  height: 310px;
+  width: 140px;
+  position: absolute; /* Posicionamiento absoluto para que se despliegue sobre otros elementos */
+  top: 100%; /* Debajo del perfil */
+  right: 0; /* Alineado a la derecha */
+  background-color: rgba(109, 106, 106, 0.8); /* Fondo semi-transparente */
+  color: white; /* Color del texto */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Sombra mejorada */
+  border-radius: 4px; /* Bordes redondeados */
+  padding: 15px; /* Espaciado interno */
+  z-index: 1000; /* Asegura que el menú esté por encima de otros elementos */
+  display: block; /* Siempre mostrar, controlaremos visibilidad con Angular */
+  transition: opacity 0.3s ease, visibility 0.3s ease; /* Transición suave */
+}
+
+.dropdown-menu.hidden {
+  display: none; /* Oculto cuando la clase 'hidden' está presente */
+  opacity: 0; /* Hacerlo invisible */
+  visibility: hidden; /* Cambiar la visibilidad */
+}
+
+.dropdown-menu a {
+  color: white; /* Asegura que el texto sea visible */
+  text-decoration: none; /* Quita el subrayado */
+  display: block; /* Para que el área de clic sea más grande */
+  padding: 8px 10px; /* Espaciado interno para opciones */
+}
+
+.dropdown-menu a:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Efecto de fondo al pasar el ratón */
+}
+
+.logout-btn {
+  background-color: transparent; /* Botón transparente */
+  border: none; /* Sin borde */
+  color: red; /* Color del texto */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  padding: 5px 10px; /* Espaciado interno para el botón */
+  border-radius: 4px; /* Bordes redondeados para el botón */
+  transition: background-color 0.3s ease; /* Efecto de transición suave */
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 0, 0, 0.1); /* Cambia el fondo al pasar el ratón */
+}
+
+
+
+
+
+
 
 /* Para pantallas pequeñas */
 @media (max-width: 1024px) {
