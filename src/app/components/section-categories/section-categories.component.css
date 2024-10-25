@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  font-size: 16px;
+  color: #241f21;
+}
+
+.title-category {
+  position: relative;
+}
+
+.title-category h2 {
+  font-size: 16px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+a.category:hover {
+  transform: scale(1.01);
+}
+
+a.category {
+  transition: transform 0.3s ease-in-out;
+}
+
+.categories-image {
+  width: 100px; /* Tamaño del círculo */
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden; /* Evita que el zoom se desborde */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Imagen con zoom en hover */
+.categories-image img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.category:hover .categories-image img {
+  transform: scale(1.05); /* Zoom solo en la imagen */
+}
+
+.category::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 1.5px; /* Grosor del borde */
+  background-color: #241f21;
+  transition: width 0.4s ease, left 0.4s ease;
+  transform: translateX(-50%);
+}
+
+/* Animación de borde al hacer hover */
+.category:hover::after {
+  width: 85%;
+  left: 50%;
+}
+
+.main-container-categories {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eeeeee;
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+
+.container-categories {
+  display: flex;
+  gap: 20px;
+}

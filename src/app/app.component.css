@@ -1,4 +1,9 @@
-.nav-hamburguer.visible {
-    opacity: 1;
-    visibility: visible;
-  }
+#structure-web {
+  display: grid;
+  min-width: 100dvh;
+  grid-template-rows: auto 1fr auto;
+  
+  scrollbar-width: none;
+}
+
+

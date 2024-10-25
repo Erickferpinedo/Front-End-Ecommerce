@@ -1,23 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
-  }
-  
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  img {
-    max-width: 100%;
-    height: auto;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  .nav-hamburguer.visible {
-    opacity: 1;
-    visibility: visible;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
