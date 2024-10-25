@@ -6,7 +6,7 @@ header {
   color: #9e9e9c;
   text-align: center;
   position: relative;
-  width: 100%;
+  width: 100vw;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   justify-items: center;
@@ -28,6 +28,7 @@ nav {
   align-items: center;
   background-color: #f5f6f3;
   padding: 25px;
+  width: 100vw;
 }
 
 .container-center {
@@ -71,8 +72,9 @@ nav ul li a {
   align-items: flex-end;
 }
 
-.icons-icon-svg a {
+img.icon-header{
   width: 20px;
+  height: 20px;
 }
 .nav-list {
   display: flex;

@@ -12,19 +12,23 @@
     </button>
 
     <div class="nav-hamburguer" id="nav">
-      <button class="close-menu" id="close" aria-label="Cerrar menú de navegación">
+      <button
+        class="close-menu"
+        id="close"
+        aria-label="Cerrar menú de navegación"
+      >
         <i class="bi bi-x"></i>
       </button>
       <ul class="nav-list">
         <li class="dropdown">
           <a href="#" aria-haspopup="true" aria-expanded="false">Productos</a>
-          <div id="dropdown-content" class="dropdown-content">
+          <!-- <div id="dropdown-content" class="dropdown-content">
             <ul>
               <li><a href="#">Subproducto 1</a></li>
               <li><a href="#">Subproducto 2</a></li>
               <li><a href="#">Subproducto 3</a></li>
             </ul>
-          </div>
+          </div> -->
         </li>
         <li class="dropdown"><a href="#">Servicios</a></li>
         <li class="dropdown"><a href="#">Celebraciones</a></li>
@@ -34,50 +38,88 @@
     </div>
 
     <div class="logo-nav-compact">
-      <a href="#"><img src="/logo-long-da.svg" alt="Logo compacto" class="logo-img" /></a>
+      <a href="#"
+        ><img src="/logo-long-da.svg" alt="Logo compacto" class="logo-img"
+      /></a>
     </div>
 
     <div class="icons-icon-svg">
       <a href="#" aria-label="Buscar">
-        <img src="/search.svg" alt="Icono de búsqueda" />
+        <img src="/search.svg" class="icon-header" alt="Icono de búsqueda" />
       </a>
       <a href="#" aria-label="Favoritos">
-        <img src="/favorite.svg" alt="Icono de favoritos" />
+        <img src="/favorite.svg" class="icon-header" alt="Icono de favoritos" />
       </a>
       <a href="#" aria-label="Carrito de compras">
-        <img src="/cart-shopping.svg" alt="Icono de carrito de compras" />
+        <img
+          src="/cart-shopping.svg"
+          class="icon-header"
+          alt="Icono de carrito de compras"
+        />
       </a>
 
       <!-- Mostrar enlace de inicio de sesión si no está autenticado -->
       <a *ngIf="!isLogged()" href="/login" aria-label="Iniciar sesión">
-        <img src="/user.svg" alt="Icono de iniciar sesión" />
+        <img
+          src="/user.svg"
+          class="icon-header"
+          alt="Icono de iniciar sesión"
+        />
       </a>
 
       <!-- Mostrar menú del perfil si el usuario está autenticado -->
       <div *ngIf="isLogged()" class="user-profile" (click)="toggleMenu()">
         <div aria-label="Perfil de Usuario" class="user-info">
-          <img [src]="userProfile?.avatar ? '' + userProfile?.avatar : '/default-avatar.png'" 
-               alt="Avatar del Usuario" class="user-avatar">
-          <p>{{ (userProfile?.firstname || '') + ' ' + (userProfile?.lastname || '') || 'Usuario' }}</p>
+          <img
+            [src]="
+              userProfile?.avatar
+                ? '' + userProfile?.avatar
+                : '/default-avatar.png'
+            "
+            alt="Avatar del Usuario"
+            class="user-avatar"
+          />
+          <p>
+            {{
+              (userProfile?.firstname || "") +
+                " " +
+                (userProfile?.lastname || "") || "Usuario"
+            }}
+          </p>
         </div>
 
         <!-- Menú desplegable del perfil -->
-        <div [ngClass]="{'dropdown-menu': true, 'hidden': !menuVisible}">
+        <div [ngClass]="{ 'dropdown-menu': true, hidden: !menuVisible }">
           <div class="user-info">
-            <img [src]="userProfile?.avatar ? '' + userProfile?.avatar : '/default-avatar.png'" 
-                 alt="Avatar del Usuario" class="user-avatar">
-            <p>{{ (userProfile?.firstname || '') + ' ' + (userProfile?.lastname || '') || 'Usuario' }}</p>
+            <img
+              [src]="
+                userProfile?.avatar
+                  ? '' + userProfile?.avatar
+                  : '/default-avatar.png'
+              "
+              alt="Avatar del Usuario"
+              class="user-avatar"
+            />
+            <p>
+              {{
+                (userProfile?.firstname || "") +
+                  " " +
+                  (userProfile?.lastname || "") || "Usuario"
+              }}
+            </p>
           </div>
-          <button (click)="logout()" aria-label="Cerrar sesión" class="logout-btn">Cerrar sesión</button>
+          <button
+            (click)="logout()"
+            aria-label="Cerrar sesión"
+            class="logout-btn"
+          >
+            Cerrar sesión
+          </button>
         </div>
       </div>
     </div>
   </div>
 </nav>
-
-
-
-
 
 <!-- <nav>
   <ul>

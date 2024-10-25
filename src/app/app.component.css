@@ -1,9 +1,4 @@
-#structure-web {
-  display: grid;
-  min-width: 100dvh;
-  grid-template-rows: auto 1fr auto;
-  
-  scrollbar-width: none;
+#info-main{
+    width: 100vw;
 }
-
 
