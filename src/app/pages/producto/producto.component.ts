@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductosSimilaresComponent } from '../../components/productos-similares/productos-similares.component';
 import { HttpErrorResponse } from '@angular/common/http'; // Importar para manejar errores
 import { AuthService } from '../../services/auth.service'; // Asegúrate de importar AuthService
+import { CartService } from '../../services/cartService';
 
 @Component({
   selector: 'app-product-page',
@@ -110,12 +111,22 @@ export class ProductComponent implements OnInit {
     this.selectedImage = image;
   }
 
+  // addToCart(): void {
+  //   if (this.product) {
+  //     console.log(`Añadir al carrito: ${this.product.nombre}, Cantidad: ${this.quantity}`);
+  //     // Lógica para añadir al carrito aquí
+  //   }
+  // }
+
+  constructor(private cartService: CartService) {}
+
   addToCart(): void {
     if (this.product) {
-      console.log(`Añadir al carrito: ${this.product.nombre}, Cantidad: ${this.quantity}`);
-      // Lógica para añadir al carrito aquí
+      console.log(`Adding to cart: ${this.product.nombre}, Quantity: ${this.quantity}`);
+      this.cartService.addToCart(this.product, this.quantity);
     }
   }
+  
 
   toggleReviewForm(): void {
     this.showReviewForm = !this.showReviewForm;
@@ -148,3 +159,5 @@ export class ProductComponent implements OnInit {
     this.newReview = { nombreRevisor: '', calificacion: null, comentario: '', productoId: '' };
   }
 }
+
+export default ProductComponent;
