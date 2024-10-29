@@ -1,10 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
+import { UserService } from '../../services/user.service';
 import { Producto, Review } from '../../models/producto.model';
+import { User } from '../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductosSimilaresComponent } from '../../components/productos-similares/productos-similares.component';
+import { HttpErrorResponse } from '@angular/common/http'; // Importar para manejar errores
+import { AuthService } from '../../services/auth.service'; // Asegúrate de importar AuthService
 
 @Component({
   selector: 'app-product-page',
@@ -16,13 +20,18 @@ import { ProductosSimilaresComponent } from '../../components/productos-similare
 export class ProductComponent implements OnInit {
   product: Producto | null = null;
   reviews: Review[] = [];  
-  newReview = { nombreRevisor: '', calificacion: null, comentario: '' };
+  newReview: Review = { nombreRevisor: '', calificacion: null, comentario: '', productoId: '' };
   selectedImage: string = '';
   quantity: number = 1;  
-  showReviewForm: boolean = false; // Control para mostrar/ocultar el formulario de reseñas
+  showReviewForm: boolean = false;
+  user: User | null = null;
+  isLoading: boolean = true; // Estado de carga
+  userAvatar: string = ''; // Propiedad para almacenar la URL del avatar
 
   private route = inject(ActivatedRoute);
   private productoService = inject(ProductoService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService); // Inyectar AuthService
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -31,13 +40,42 @@ export class ProductComponent implements OnInit {
       
       if (productId) {
         this.cargarProducto(productId);
+      } else {
+        console.error('Product ID is invalid.');
       }
     });
+
+    this.fetchUserProfile(); // Llamar a fetchUserProfile aquí
+  }
+
+  fetchUserProfile(): void {
+    const userId = this.authService.getUserId(); // Obtener el userId desde AuthService
+    if (userId) {
+      this.userService.fetchUserProfile(userId).subscribe(
+        (userData: User) => {
+          this.user = userData;
+          console.log('Usuario cargado:', this.user); // Verifica que el avatar esté presente
+
+          if (this.user && this.user.avatar) {
+            this.userAvatar = `http://localhost:3000/api/uploads/avatar/${this.user.avatar}`; // Corrige la ruta si es necesario
+          } else {
+            this.userAvatar = 'path/to/default/avatar.png'; // Avatar por defecto
+          }
+        },
+        (error: any) => {
+          console.error('Error al obtener el usuario:', error);
+        }
+      );
+    } else {
+      console.error('No se pudo obtener el userId');
+    }
   }
 
   private cargarProducto(productId: string): void {
+    this.isLoading = true; // Comienza a cargar
     this.productoService.obtenerProductoPorId(productId).subscribe(
       (producto: Producto) => {
+        this.isLoading = false; // Finaliza la carga
         console.log('Producto recibido:', producto);
         this.product = producto;
 
@@ -47,21 +85,22 @@ export class ProductComponent implements OnInit {
           console.warn('No hay imágenes disponibles para este producto');
         }
 
-        this.cargarResenas(productId);
+        this.cargarReviews(productId);
       },
-      (error) => {
+      (error: HttpErrorResponse) => { // Tipado del error
+        this.isLoading = false; // Finaliza la carga
         console.error('Error al obtener el producto:', error);
       }
     );
   }
 
-  private cargarResenas(productId: string): void {
+  private cargarReviews(productId: string): void {
     this.productoService.obtenerReviewsPorProductoId(productId).subscribe(
-      (resenas) => {
-        console.log('Reseñas recibidas:', resenas);
-        this.reviews = resenas;
+      (reviews: Review[]) => {
+        console.log('Reseñas recibidas:', reviews);
+        this.reviews = reviews;
       },
-      (error) => {
+      (error: HttpErrorResponse) => {
         console.error('Error al obtener las reseñas:', error);
       }
     );
@@ -74,36 +113,38 @@ export class ProductComponent implements OnInit {
   addToCart(): void {
     if (this.product) {
       console.log(`Añadir al carrito: ${this.product.nombre}, Cantidad: ${this.quantity}`);
+      // Lógica para añadir al carrito aquí
     }
   }
 
-  // Método para mostrar/ocultar el formulario de reseñas
-  toggleReviewForm() {
+  toggleReviewForm(): void {
     this.showReviewForm = !this.showReviewForm;
   }
 
-  submitReview() {
-    if (this.product && this.newReview.nombreRevisor && this.newReview.calificacion !== null && this.newReview.comentario) {
-      if (this.product._id) {
-        const reviewWithProductId = {
-          ...this.newReview,
-          productoId: this.product._id,
-        };
-  
-        this.productoService.addReview(reviewWithProductId).subscribe(
-          (response) => {
-            this.reviews.push(response);
-            this.newReview = { nombreRevisor: '', calificacion: null, comentario: '' };
-          },
-          (error) => {
-            console.error('Error al enviar la reseña', error);
-          }
-        );
-      } else {
-        console.error('El ID del producto es indefinido.');
-      }
+  submitReview(): void {
+    if (this.newReview.nombreRevisor && this.newReview.calificacion !== null && this.newReview.comentario) {
+      this.newReview.productoId = this.product?._id || '';
+      const token = localStorage.getItem('token') || '';
+
+      console.log('Enviando reseña:', this.newReview);
+
+      this.productoService.addReview(this.newReview, token).subscribe(
+        (response: any) => {
+          console.log('Reseña enviada con éxito:', response);
+          this.reviews.push(response.review);
+          this.resetReviewForm();
+          this.showReviewForm = false;
+        },
+        (error: HttpErrorResponse) => {
+          console.error('Error al enviar la reseña:', error);
+        }
+      );
     } else {
-      console.error('Por favor completa todos los campos de la reseña.');
+      console.log('Por favor completa todos los campos');
     }
+  }
+
+  private resetReviewForm(): void {
+    this.newReview = { nombreRevisor: '', calificacion: null, comentario: '', productoId: '' };
   }
 }

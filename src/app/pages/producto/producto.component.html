@@ -19,7 +19,7 @@
       <h1>{{ product.nombre }}</h1>
       <p class="price">{{ product.precio | currency }}</p>
       <h2>Descripción</h2>
-      <p>{{ product.descripcion }}</p>
+      <p>{{ product.descripcionOne }}</p>
 
       <!-- Selector de cantidad -->
       <div class="quantity-selector">
@@ -45,79 +45,68 @@
  
 
  <!-- Nueva sección con imagen adicional y más detalles -->
-<div class="additional-info" *ngIf="product && product.images && product.images.length > 1">
-  <div class="extra-info-container">
-    <div class="extra-image">
-      <img [src]="product.images[1] || selectedImage" alt="Imagen adicional de {{ product.nombre }}" class="additional-image" />
-    </div>
-    <div class="extra-details">
-      <h2>Más sobre el producto</h2>
-      <p *ngIf="product.material">Material: {{ product.material }}</p>
-      <p *ngIf="product.dimensions">Dimensiones: {{ product.dimensions }}</p>
-      <p *ngIf="product.stock !== undefined">Stock disponible: {{ product.stock }}</p>
-      <p *ngIf="product.shippingTime">Envío estimado: {{ product.shippingTime }}</p>
+ <div class="additional-info" *ngIf="product && product.images && product.images.length > 1">
+  <div class="info-box">
+    <div class="extra-info-container">
+      <div class="extra-image">
+        <img [src]="product.images[1] || selectedImage" alt="Imagen adicional de {{ product.nombre }}" class="additional-image" />
+      </div>
+      <div class="extra-details">
+        <h2>Más sobre el producto</h2>
+        <p>{{ product.descripcionTwo }}</p>
+      </div>
     </div>
   </div>
 </div>
+
 <div class="additional-info2" *ngIf="product && product.images && product.images.length > 1">
-  <div class="extra-info-container">
-    <div class="extra-details">
-      <h2>Más sobre el producto</h2>
-      <p *ngIf="product.material">Material: {{ product.material }}</p>
-      <p *ngIf="product.dimensions">Dimensiones: {{ product.dimensions }}</p>
-      <p *ngIf="product.stock !== undefined">Stock disponible: {{ product.stock }}</p>
-      <p *ngIf="product.shippingTime">Envío estimado: {{ product.shippingTime }}</p>
-    </div>
-    <div class="extra-image">
-      <img [src]="product.images[1] || selectedImage" alt="Imagen adicional de {{ product.nombre }}" class="additional-image" />
+  <div class="info-box">
+    <div class="extra-info-container">
+      <div class="extra-details">
+        <h2>Dimensiones</h2>
+        <p *ngIf="product.material">Material: {{ product.material }}</p>
+        <p *ngIf="product.dimensions">Dimensiones: {{ product.dimensions }}</p>
+        <p *ngIf="product.stock !== undefined">Stock disponible: {{ product.stock }}</p>
+        <p *ngIf="product.shippingTime">Envío estimado: {{ product.shippingTime }}</p>
+      </div>
+      <div class="extra-image">
+        <img [src]="product.images[1] || selectedImage" alt="Imagen adicional de {{ product.nombre }}" class="additional-image" />
+      </div>
     </div>
   </div>
 </div>
+
 <div *ngIf="product">
  
 
-  <!-- Aquí irían las imágenes y demás detalles del producto -->
+
+
 
   <h2>Reseñas</h2>
+<button (click)="toggleReviewForm()">Dejar una reseña</button>
+<div *ngIf="showReviewForm">
+  <form (ngSubmit)="submitReview()">
+    <input [(ngModel)]="newReview.nombreRevisor" name="nombreRevisor" placeholder="Tu nombre" required>
+    <input type="number" [(ngModel)]="newReview.calificacion" name="calificacion" placeholder="Calificación" required min="1" max="5">
+    <textarea [(ngModel)]="newReview.comentario" name="comentario" placeholder="Tu comentario" required></textarea>
+    <button type="submit">Enviar reseña</button>
+  </form>
+</div>
 
-  <!-- Botón para mostrar/ocultar el formulario de reseñas -->
-  <button (click)="toggleReviewForm()">
-    {{ showReviewForm ? 'Ocultar formulario de reseñas' : 'Agregar una reseña' }}
-  </button>
+<div *ngFor="let review of reviews" class="review">
+  <img *ngIf="user?.avatar; else defaultAvatar" [src]="userAvatar" alt="Avatar de {{ user?.firstname }}" class="reviewer-image" style="width: 50px; height: 50px; border-radius: 50%;">
+  <ng-template #defaultAvatar>
+    <img src="" alt="Avatar por defecto" class="reviewer-image" style="width: 50px; height: 50px; border-radius: 50%;">
+  </ng-template>
+  <div class="review-content">
+    <strong>{{ review.nombreRevisor }}</strong>
+    <p>Calificación: {{ review.calificacion }}</p>
+    <p>{{ review.comentario }}</p>
+  </div>
+</div>
 
-  <!-- Formulario de reseña -->
-  <div *ngIf="showReviewForm">
-    <form (ngSubmit)="submitReview()">
-      <div>
-        <label for="nombreRevisor">Nombre:</label>
-        <input type="text" id="nombreRevisor" [(ngModel)]="newReview.nombreRevisor" name="nombreRevisor" required>
-      </div>
-      <div>
-        <label for="calificacion">Calificación:</label>
-        <select id="calificacion" [(ngModel)]="newReview.calificacion" name="calificacion" required>
-          <option [ngValue]="null">Selecciona una calificación</option>
-          <option *ngFor="let i of [1, 2, 3, 4, 5]" [ngValue]="i">{{ i }}</option>
-        </select>
-      </div>
-      <div>
-        <label for="comentario">Comentario:</label>
-        <textarea id="comentario" [(ngModel)]="newReview.comentario" name="comentario" required></textarea>
-      </div>
-      <button type="submit">Enviar Reseña</button>
-    </form>
-  </div>
 
-  <div *ngIf="reviews.length > 0">
-    <h3>Reseñas de otros usuarios:</h3>
-    <div *ngFor="let review of reviews">
-      <h4>{{ review.nombreRevisor }}</h4>
-      <p>Calificación: {{ review.calificacion }}</p>
-      <p>{{ review.comentario }}</p>
-    </div>
-  </div>
-  <div *ngIf="reviews.length === 0">
-    <p>No hay reseñas para este producto.</p>
-  </div>
+
 </div>
   
   <!-- Componente de productos similares -->

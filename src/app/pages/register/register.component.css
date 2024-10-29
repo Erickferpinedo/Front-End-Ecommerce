@@ -57,7 +57,9 @@ form {
   background-color: #0056b3;
   transform: translateY(-2px);
 }
-
+.eye-icon {
+  cursor: pointer;
+}
 /* Centrar el formulario */
 main {
   display: flex;

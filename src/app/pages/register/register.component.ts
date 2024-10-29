@@ -1,73 +1,94 @@
-import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
-import { HeaderComponent } from '../../components/header/header.component';
-import { CommonModule } from '@angular/common'; // Importa CommonModule aquí
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [ReactiveFormsModule, HeaderComponent, CommonModule], // Agrega CommonModule aquí
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
 })
 export class RegisterComponent {
-  private userService = inject(UserService);
-  private router = inject(Router);
-  avatar: File | null = null;
+  registerForm: FormGroup;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
+  passwordVisible: boolean = false;
+  loading: boolean = false;
 
-  registerForm = new FormGroup({
-    firstname: new FormControl("", {
-      validators: [Validators.required]
-    }),
-    lastname: new FormControl("", {
-      validators: [Validators.required]
-    }),
-    email: new FormControl("", {
-      validators: [Validators.required, Validators.email] // Añade validación de email
-    }),
-    password: new FormControl("", {
-      validators: [Validators.required]
-    })
-  });
-
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.avatar = file;
-    }
-  }
-
-  toFormData(formValue: any) {
-    const formData = new FormData();
-    for (const key in formValue) {
-      if (formValue.hasOwnProperty(key) && formValue[key] !== null && formValue[key] !== undefined) {
-        formData.append(key, formValue[key]);
-      }
-    }
-    if (this.avatar) {
-      formData.append('avatar', this.avatar, this.avatar.name);
-    }
-    console.log(formData.getAll("avatar")); // Para depuración
-    return formData;
+  constructor(private fb: FormBuilder, private userService: UserService, private router: Router) {
+    this.registerForm = this.fb.group({
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      avatar: [null],
+    });
   }
 
   onSubmit() {
-    console.log(this.registerForm.value); // Para depuración
-    if (this.registerForm.valid && this.avatar) {
-      const formData = this.toFormData(this.registerForm.value);
+    if (this.registerForm.valid) {
+      this.loading = true; 
+      this.errorMessage = null; 
+      this.successMessage = null; 
+
+      const formData = new FormData();
+formData.append('firstname', this.registerForm.value.firstname);
+formData.append('lastname', this.registerForm.value.lastname);
+formData.append('email', this.registerForm.value.email);
+formData.append('password', this.registerForm.value.password);
+
+// Verifica que avatar no sea null o undefined antes de agregarlo
+if (this.registerForm.value.avatar) {
+    formData.append('avatar', this.registerForm.value.avatar); // Asegúrate de que este sea el campo correcto
+}
+
+
       this.userService.register(formData).subscribe({
-        next: response => {
-          // Redirigir a la página de inicio después del registro
-          this.router.navigate(["/"]); // Asegúrate de que esta ruta sea correcta
+        next: (response) => {
+          this.successMessage = '¡Registro exitoso!';
+          this.errorMessage = null;
+
+          
+          
         },
-        error: error => {
-          console.log(error);
-        }
+        error: (error) => {
+          console.error("Error al registrar el usuario:", error);
+          this.errorMessage = error.error?.message || 'Error al registrar el usuario.';
+          this.loading = false; 
+        },
       });
     } else {
-      console.log("Campos no válidos");
+      this.errorMessage = 'Por favor, completa todos los campos correctamente.';
     }
+  }
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+  
+      // Validar tipo de archivo y tamaño
+      const validTypes = ['image/jpeg', 'image/png'];
+      if (!validTypes.includes(file.type)) {
+        this.errorMessage = 'Por favor, selecciona un archivo de imagen válido (JPEG o PNG)';
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) { // Limitar a 2MB
+        this.errorMessage = 'El tamaño del archivo debe ser menor a 2MB';
+        return;
+      }
+  
+      // Asignar el archivo al campo avatar en el formulario
+      this.registerForm.patchValue({ avatar: file });
+      this.errorMessage = null; // Limpiar mensajes de error si el archivo es válido
+    }
+  }
+  
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 }

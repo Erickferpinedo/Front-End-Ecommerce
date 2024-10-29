@@ -1,4 +1,10 @@
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <!-- Mensaje de éxito -->
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <!-- Campo de nombre -->
   <div class="mb-3">
     <label for="firstname" class="form-label">Firstname</label>
     <input type="text" class="form-control" id="firstname" formControlName="firstname" />
@@ -8,6 +14,7 @@
     </div>
   </div>
 
+  <!-- Campo de apellido -->
   <div class="mb-3">
     <label for="lastname" class="form-label">Lastname</label>
     <input type="text" class="form-control" id="lastname" formControlName="lastname" />
@@ -17,6 +24,7 @@
     </div>
   </div>
 
+  <!-- Campo de correo -->
   <div class="mb-3">
     <label for="email" class="form-label">Email</label>
     <input type="email" class="form-control" id="email" formControlName="email" />
@@ -27,20 +35,32 @@
     </div>
   </div>
 
+  <!-- Campo de avatar -->
   <div class="mb-3">
     <label for="avatar" class="form-label">Avatar</label>
     <input type="file" class="form-control" id="avatar" (change)="onFileChange($event)" />
   </div>
 
+  <!-- Campo de contraseña -->
   <div class="mb-3">
     <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" formControlName="password" />
+    <div class="input-group">
+      <input 
+        [type]="passwordVisible ? 'text' : 'password'" 
+        class="form-control" 
+        id="password" 
+        formControlName="password" 
+        placeholder="Enter your password" />
+      <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+        <i class="fa" [ngClass]="{ 'fa-eye': passwordVisible, 'fa-eye-slash': !passwordVisible }"></i>
+      </button>
+    </div>
     <div *ngIf="(registerForm.get('password')?.invalid && 
                   (registerForm.get('password')?.dirty || registerForm.get('password')?.touched))" class="text-danger">
       <div *ngIf="registerForm.get('password')?.hasError('required')">Password is required</div>
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary">Register</button>
+  <!-- Botón de registro -->
+  <button type="submit" class="btn btn-primary" >Register</button>
 </form>
-

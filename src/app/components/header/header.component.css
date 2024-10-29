@@ -1,5 +1,4 @@
 
-
 /* --------------------------------CSS de header img*/
 header {
   background-color: #ffffff;
@@ -155,10 +154,11 @@ nav .nav-hamburguer.visible {
 }
 
 .user-avatar {
-  width: 50px; /* Tamaño del avatar */
-  height: 40px; /* Tamaño del avatar */
+  width: 30px; /* Aumenta el tamaño del avatar */
+  height: 20px; /* Aumenta el tamaño del avatar */
   border-radius: 50%; /* Avatar redondo */
   margin-right: 20px; /* Espaciado entre avatar y nombre */
+  object-fit: cover; /* Asegura que la imagen se recorte y ajuste correctamente */
 }
 
 .dropdown-menu {
@@ -207,8 +207,6 @@ nav .nav-hamburguer.visible {
 .logout-btn:hover {
   background-color: rgba(255, 0, 0, 0.1); /* Cambia el fondo al pasar el ratón */
 }
-
-
 
 
 
