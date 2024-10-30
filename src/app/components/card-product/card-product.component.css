@@ -1,0 +1,49 @@
+/* card */
+.card-product { /* estilos para toda la card*/
+    max-width: 300px;
+    max-height: 600px;
+    padding: 5px;
+  }
+  /* distribucion de la card*/
+  .card-product .product-card-image {
+    width: 100%;
+    height: 400px;
+    position: relative; /* posicion para que la imagen y el boton cuadren*/
+    background-color: #eeeeee
+  }
+  
+  .card-product .product-card-image img {
+    width: 100%;
+    height: 100%; /* tamaños de la imagen para que quede al tamaño del div*/
+  }
+  
+  .card-product .product-card-image button {
+    border-radius: 50%; /* borde del boton*/
+    width: 40px;
+    height: 40px;
+    position: absolute; /* posicion para que el boton quede sobre la imagen*/
+    padding: 12px;
+    border: 1px solid black;
+    background-color: white; /* fondo del boton*/
+    top: 87%;
+    left: 82%; /* posicion del boton en el div */
+    
+  }
+  /* info de la card */
+  .card-product .card-info { /* modificar fuente de los textos*/
+    width: 100%;
+    height: 100%;
+  }
+  .card-product .card-info h1{
+      margin:5px;
+  }
+  .card-product .card-info p{
+      margin: 5px;
+  }
+  .card-product .card-info span{
+      margin:5px;
+  }
+  /********
+  falta el grid y las media queries
+  ********/
+  
