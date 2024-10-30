@@ -37,9 +37,10 @@
       <a href="#" aria-label="Favoritos">
         <img src="/favorite.svg" class="icon-header" alt="Icono de favoritos" />
       </a>
-      <a href="#" aria-label="Carrito de compras">
+      <a  href="../carrito/carrito.component.html" aria-label="Carrito de compras" (click)="toggleCart($event)">
         <img src="/cart-shopping.svg" class="icon-header" alt="Icono de carrito de compras" />
       </a>
+      
 
       <!-- Mostrar enlace de inicio de sesión si no está autenticado -->
       <a *ngIf="!isLogged()" href="/login" aria-label="Iniciar sesión">

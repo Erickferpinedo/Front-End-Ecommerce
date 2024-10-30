@@ -1,8 +1,19 @@
+<div *ngIf="isCartOpen" class="cart-container open">
+  <h2>Carrito de Compras</h2>
+  <div *ngFor="let producto of productos; index as i" class="cart-item">
+    <div class="item-info">
+      <p class="product-name">{{ producto.product.nombre }}</p>
+      <p class="product-price">Precio: ${{ producto.product.precio }}</p>
+      <div class="quantity-control">
+        <button (click)="decreaseQuantity(i)" class="quantity-button">-</button>
+        <span class="product-quantity">Cantidad: {{ producto.quantity }}</span>
+        <button (click)="increaseQuantity(i)" class="quantity-button">+</button>
+      </div>
+    </div>
+    <button (click)="eliminarProducto(i)" class="remove-button">Eliminar</button>
+  </div>
 
-
-<div *ngFor="let producto of productos; index as i">
-  <p>{{ producto.nombre }} - {{ producto.precio  }} x {{ producto.quantity }}</p>
-  <button (click)="eliminarProducto(i)">Eliminar</button>
+  <div class="cart-total">
+    <p>Total: ${{ getTotal() }}</p>
+  </div>
 </div>
-
-<p>Total: {{ getTotal()   }}</p>
