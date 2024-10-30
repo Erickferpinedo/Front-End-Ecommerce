@@ -1,59 +1,69 @@
-import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule]
 })
 export class LoginComponent {
-  private router = inject(Router);
-  private userService = inject(UserService);
-  private authService = inject(AuthService);
+  loginForm: FormGroup;
+  errorMessage: string = '';
+  showPassword: boolean = false;
+  private loginSubscription: Subscription | undefined; // Subscription to cleanup
 
-  errorMessage: string = ""; // Mensaje de error
-
-  // Definición del formulario de inicio de sesión
-  loginForm = new FormGroup({
-    email: new FormControl("", {
-      validators: [Validators.required, Validators.email]
-    }),
-    password: new FormControl("", {
-      validators: [Validators.required, Validators.minLength(6)]
-    })
-  });
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const formData = this.loginForm.value;
+      const { email, password } = this.loginForm.value;
 
-      // Asegurarte de que no sean null o undefined
-      this.userService.login({
-        email: formData.email as string,
-        password: formData.password as string
-      }).subscribe({
-        next: (response: any) => {
+      if (this.loginSubscription) {
+        this.loginSubscription.unsubscribe(); // Cleanup previous subscription
+      }
+
+      this.loginSubscription = this.authService.login(email, password).subscribe({
+        next: (response) => {
           if (response.token) {
-            this.authService.setToken(response.token);
-            this.router.navigate(["/"]); 
-          } else {
-            this.errorMessage = response.message || "Credenciales incorrectas. Inténtalo de nuevo.";
+            localStorage.setItem('token', response.token);
+            this.loginForm.reset(); // Reset form on success
+            this.router.navigate(['/']); // Redirect to main page
           }
         },
         error: (error) => {
-          console.error("Error al iniciar sesión", error);
-          this.errorMessage = error.error.message || "Credenciales incorrectas. Inténtalo de nuevo.";
+          console.error('Error al iniciar sesión:', error);
+          if (error.status === 401) {
+            this.errorMessage = 'Credenciales incorrectas. Por favor, inténtalo de nuevo.';
+          } else if (error.status === 500) {
+            this.errorMessage = 'Error del servidor. Por favor, intenta más tarde.';
+          } else {
+            this.errorMessage = 'Ocurrió un error inesperado. Por favor, intenta más tarde.';
+          }
         }
       });
-    } else {
-      this.errorMessage = "Por favor, completa todos los campos correctamente.";
+    }
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  ngOnDestroy() {
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe(); // Cleanup on component destroy
     }
   }
 }

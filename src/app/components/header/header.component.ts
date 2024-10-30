@@ -5,6 +5,8 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { RouterLinkWithHref } from '@angular/router';
 import { User } from '../../models/user.model';
+import { Observable, catchError, tap, throwError } from 'rxjs'; // Importa throwError aquí
+
 
 @Component({
   selector: 'app-header',
@@ -25,7 +27,13 @@ export class HeaderComponent implements OnInit {
   userProfile: User | null = null;
 
   ngOnInit(): void {
-    this.fetchUserProfile();
+    const userId = localStorage.getItem('userId'); // Asegúrate de obtener el userId desde localStorage
+    if (userId) {
+      this.fetchUserProfile(userId).subscribe(profile => {
+        this.userProfile = profile;
+        console.log('User Profile:', this.userProfile);
+      });
+    }
     this.setupNavMenu();
   }
 
@@ -60,22 +68,23 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  fetchUserProfile() {
-    if (this.authService.isLogged()) {
-      this.userService.fetchUserProfile().subscribe({
-        next: (profile) => {
-          this.userProfile = profile; 
-        },
-        error: (error) => {
-          console.error('Error fetching user profile:', error.message || error);
-        }
-      });
-    }
+  fetchUserProfile(userId: string): Observable<User> {
+    const token = localStorage.getItem('token') ?? '';
+  
+    return this.userService.fetchUserProfile(userId).pipe(
+      tap((profile) => {
+        console.log('Perfil del usuario:', profile);
+        this.userProfile = profile; // Mueve esto aquí para estar seguro de que se asigne correctamente
+        console.log('Avatar del usuario:', this.userProfile?.avatar);
+      }),
+      catchError(this.handleError('Error al obtener el perfil del usuario'))
+    );
   }
+  
 
   toggleMenu() {
-    this.menuVisible = !this.menuVisible; 
-    console.log('Menú visible:', this.menuVisible); 
+    this.menuVisible = !this.menuVisible;
+    console.log('Menú visible:', this.menuVisible);
   }
 
   @HostListener('document:click', ['$event'])
@@ -88,7 +97,7 @@ export class HeaderComponent implements OnInit {
     const isUserProfileClicked = this.userMenu.nativeElement.contains(event.target);
 
     if (!isDropdownClicked && !isUserProfileClicked) {
-      this.menuVisible = false; 
+      this.menuVisible = false;
     }
   }
 
@@ -99,5 +108,17 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.authService.removeToken();
     this.router.navigate(['/']);
+  }
+
+  getUserAvatar() {
+    return this.userProfile?.avatar || 'assets/images/default-avatar.png'; // Usa el avatar del usuario o una imagen por defecto
+  }
+
+  private handleError(defaultMessage: string) {
+    return (error: any) => {
+      const errorMessage = error.error?.message || defaultMessage; // Mensaje específico del servidor
+      console.error(defaultMessage, error);
+      return throwError(() => new Error(errorMessage));
+    };
   }
 }

@@ -4,7 +4,8 @@ export interface Producto {
   nombre: string;
   precio: number;
   images: string[];
-  descripcion: string;
+  descripcionOne: string;
+  descripcionTwo:string;
   categoriaId?: string;
   material?: string;
   dimensions?: string;

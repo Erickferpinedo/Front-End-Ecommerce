@@ -1,52 +1,69 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from '../models/user.model';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { User, RegisterData, LoginResponse, RegisterResponse } from '../models/user.model'; 
+import { tap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService); // Inyección de AuthService
+  public apiUrl = 'http://localhost:3000/api';
 
-  constructor() {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  // Método para registrar un nuevo usuario
-  register(formData: any): Observable<User> {
-    return this.http.post<User>("http://localhost:3000/api/auth/register", formData);
-  }
-
-  // Método para iniciar sesión
-  login(formData: { email: string; password: string }): Observable<{ token: string; user: User }> {
-    return this.http.post<{ token: string; user: User }>("http://localhost:3000/api/auth/login", {
-      email: formData.email,
-      password: formData.password,
-    }).pipe(
-      tap(response => {
-        this.authService.setToken(response.token); // Almacena el token usando AuthService
-      })
+  register(registerData: FormData): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/auth/register`, registerData).pipe(
+      tap((response: RegisterResponse) => {
+        if (response?.user?._id && response.token) {
+          localStorage.setItem('userId', response.user._id);
+          this.authService.setToken(response.token);
+        }
+      }),
+      catchError(this.handleError<RegisterResponse>('Error al registrar el usuario'))
     );
   }
 
-  // Método para recuperar el perfil del usuario
-  fetchUserProfile(): Observable<User> {
-    const token = this.authService.getToken(); // Obtén el token
-    return this.http.get<User>("http://localhost:3000/api/user/profile", {
-      headers: {
-        Authorization: `Bearer ${token}` // Agrega el token en los encabezados
-      }
-    }).pipe(
-      tap(profile => {
-        console.log('Perfil del usuario:', profile); // Para depuración
-      })
+  uploadAvatar(userId: string, formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/avatar/${userId}`, formData).pipe(
+      catchError(this.handleError('Error al subir el avatar'))
     );
   }
 
-  // Método para verificar si el usuario está autenticado
+  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
+      tap((response: LoginResponse) => {
+        if (response?.token) {
+          this.authService.setToken(response.token);
+        }
+      }),
+      catchError(this.handleError<LoginResponse>('Error al iniciar sesión'))
+    );
+  }
+
+  fetchUserProfile(userId: string): Observable<User> {
+    return this.http.get<User>(`http://localhost:3000/api/user/profile/${userId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    }).pipe(
+        catchError(err => {
+            console.error('Error al obtener el perfil del usuario', err);
+            return throwError(err);
+        })
+    );
+}
+
+
+
   isLogged(): boolean {
     return this.authService.isLogged();
+  }
+
+  private handleError<T>(defaultMessage: string) {
+    return (error: any): Observable<T> => {
+      const errorMessage = error.error?.message || defaultMessage;
+      console.error(defaultMessage, error);
+      return throwError(() => new Error(errorMessage));
+    };
   }
 }
