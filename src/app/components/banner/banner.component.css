@@ -1,0 +1,19 @@
+.banner{
+    display: flex;
+  flex-direction: column; /* dirrecion en columna */
+  justify-content: center; /* centrado de titulo */
+}
+.banner .banner-image {
+  background-repeat: no-repeat; /* no permite que la imagen se repita */
+  position: relative;
+  background-size: 100% 100%;
+} 
+/* 
+    
+    */
+.banner .titulo {
+  color: white; /* color del titulos*/
+  margin: 5px; /* espaciado del margen para el titulo*/
+  /*colocar la tipografia*/
+  position: absolute;
+}
