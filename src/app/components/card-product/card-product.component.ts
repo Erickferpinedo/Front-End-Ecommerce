@@ -1,6 +1,5 @@
 
 import { Component, inject, Input, SimpleChanges } from '@angular/core';
-import { ProductoService } from '../../services/producto.service';
 import { CartService } from '../../services/cart.Service';
 import { Producto } from '../../models/producto.model';
 import { FormControl } from '@angular/forms';
@@ -13,7 +12,7 @@ import { FormControl } from '@angular/forms';
   styleUrl: './card-product.component.css'
 })
 export class CardProductComponent {
-private productoService =inject(ProductoService);
+
 private cartService = inject(CartService)
 
 @Input() producto: any;
