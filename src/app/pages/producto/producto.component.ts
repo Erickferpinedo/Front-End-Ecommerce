@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductosSimilaresComponent } from '../../components/productos-similares/productos-similares.component';
 import { HttpErrorResponse } from '@angular/common/http'; // Importar para manejar errores
 import { AuthService } from '../../services/auth.service'; // Asegúrate de importar AuthService
-import { CartService } from '../../services/cartService';
+import { CartService } from '../../services/cart.Service';
 
 @Component({
   selector: 'app-product-page',
