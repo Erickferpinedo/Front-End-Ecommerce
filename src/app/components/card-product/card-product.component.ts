@@ -25,19 +25,19 @@ productQuantity = new FormControl(0);
     if (changes['product'] && this.producto) {
       this.productQuantity.setValue(this.producto.quantity);
     }
-  }
+  } }
 
-  increment(productId: string) {
-    this.cartService.incrementQuantity(productId)
-  }
+  // increment(productId: string) {
+  //   this.cartService.incrementQuantity(productId)
+  // }
 
-  decrement(productId: string) {
-    this.cartService.decrementQuantity(productId)
-  }
+  // decrement(productId: string) {
+  //   this.cartService.decrementQuantity(productId)
+  // }
 
-  delete(productId: string) {
-    this.cartService.deleteProduct(productId)
-  }
-}
+//   delete(productId: string) {
+//     this.cartService.deleteProduct(productId)
+//   }
+// }
 
 

@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
 import { ProductosSimilaresComponent } from '../../components/productos-similares/productos-similares.component';
 import { HttpErrorResponse } from '@angular/common/http'; // Importar para manejar errores
 import { AuthService } from '../../services/auth.service'; // Asegúrate de importar AuthService
-import { CartService } from '../../services/cart.Service';
 
 @Component({
   selector: 'app-product-page',
@@ -118,14 +117,14 @@ export class ProductComponent implements OnInit {
   //   }
   // }
 
-  constructor(private cartService: CartService) {}
+  // constructor(private cartService: CartService) {}
 
-  addToCart(): void {
-    if (this.product) {
-      console.log(`Adding to cart: ${this.product.nombre}, Quantity: ${this.quantity}`);
-      this.cartService.addToCart(this.product, this.quantity);
-    }
-  }
+  // addToCart(): void {
+  //   if (this.product) {
+  //     console.log(`Adding to cart: ${this.product.nombre}, Quantity: ${this.quantity}`);
+  //     this.cartService.addToCart(this.product, this.quantity);
+  //   }
+  // }
   
 
   toggleReviewForm(): void {

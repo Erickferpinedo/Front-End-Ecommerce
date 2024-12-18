@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Producto } from '../models/producto.model';
 
 @Injectable({
@@ -6,78 +6,35 @@ import { Producto } from '../models/producto.model';
 })
 export class CartService {
   private cartItems: { product: Producto; quantity: number }[] = [];
-  productos = signal(new Map());
-  cartVisibility = signal(false);
+  isCartVisible = signal(false);
 
-  //visualizacion de carrito (codigo copiado)
-  total = computed(() => {
-    const productsMap = this.productos();
-    let total = 0;
-
-    productsMap.forEach((product) => {
-      total += product.price * product.quantity;
-    });
-
-    return total;
-  });
-  //****************************
-  
-  toggleCartVisibility() {
-    this.cartVisibility.update((value) => !value);
+  // Get cart items
+  getItems() {
+    return this.cartItems;
   }
 
-  addToCart(product: Producto, quantity: number): void {
-    const existingItem = this.cartItems.find(item => item.product._id === product._id);
-    if (existingItem) {
-      existingItem.quantity += quantity;
+  addToCart(product: Producto, quantity: number = 1): void {
+    const existing = this.cartItems.find((item) => item.product._id === product._id);
+    if (existing) {
+      existing.quantity += quantity;
     } else {
       this.cartItems.push({ product, quantity });
     }
-    console.log('Product added to cart:', this.cartItems);
   }
 
-  getCartItems() {
-    return this.cartItems;
+  removeFromCart(index: number): void {
+    this.cartItems.splice(index, 1);
+  }
+
+  toggleCart() {
+    this.isCartVisible.update((v) => !v);
   }
 
   clearCart() {
     this.cartItems = [];
   }
-  incrementQuantity(productId: string) {
-    this.productos.update((productosMap) => {
-      const productInCart = productosMap.get(productId);
 
-      if (productInCart) {
-        productosMap.set(productId, {
-          ...productInCart,
-          quantity: productInCart.quantity + 1,
-        });
-      }
-
-      return new Map(productosMap);
-    });
-  }
-
-  decrementQuantity(productId: string) {
-    this.productos.update((productosMap) => {
-      const productInCart = productosMap.get(productId);
-      if (productInCart!.quantity === 1) {
-        productosMap.delete(productId);
-      } else {
-        productosMap.set(productId, {
-          ...productInCart!,
-          quantity: productInCart!.quantity - 1,
-        });
-      }
-
-      return new Map(productosMap);
-    });
-  }
-
-  deleteProduct(productId: string) {
-    this.productos.update((productosMap) => {
-      productosMap.delete(productId);
-      return new Map(productosMap);
-    });
+  getTotal(): number {
+    return this.cartItems.reduce((sum, item) => sum + item.product.precio * item.quantity, 0);
   }
 }
