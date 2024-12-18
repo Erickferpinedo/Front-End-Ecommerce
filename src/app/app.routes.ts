@@ -13,6 +13,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [redirectIfLogged] },
   { path: 'register', component: RegisterComponent, canActivate: [redirectIfLogged] }, // Comma added here
   { path: 'products/category/id', component: ProductComponent, pathMatch: 'full' },
+  {path: 'category', component:CategoriasComponent, pathMatch: 'full'}
 ];
 
 export const appConfig = [
